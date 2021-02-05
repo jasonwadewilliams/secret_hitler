@@ -1,0 +1,72 @@
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    
+    
+    /* Style the top navigation bar */
+    .bg-dark {
+        background-color: rgb(25, 25, 25) !important;
+    }
+    .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+        color: rgb(222,140,122);
+        font-family: 'Bungee';
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgb(247,225,195);
+        font-family: 'Bungee';
+    }
+
+    .logo {
+        max-height: 40px;
+        width: auto;
+        border-radius: 5px;
+    }
+
+
+
+
+    /* main body */
+    a {
+        text-decoration: none;
+        color: rgb(222,140,122);
+    }
+
+    button {
+        font-family: 'Girassol';
+        font-weight:bold;
+        font-size:larger;
+        padding: 20px;
+        border-start-end-radius: 20px;
+        color:rgb(0, 0, 0);
+    }
+
+    .mainblock {
+        position: absolute;
+        top: 60px;
+        bottom:100px;
+        padding: 80px 20px;
+        width: 100%;
+        background-color: rgb(150,150,150);
+    }
+
+
+    /* -- footer -- */
+    .baseline {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+
+    }
+
+    footer {
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        padding: 30px;
+        color: rgb(247,225,195);
+        background-color: rgb(25,25,25);
+    }

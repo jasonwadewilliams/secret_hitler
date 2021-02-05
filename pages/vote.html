@@ -3,21 +3,28 @@
     <head>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <title>Secret Hitler</title>
-        <link rel="shortcut icon" type="/image/png" href="images/secretHitlerIcon_small.png"/>
+        <link rel="shortcut icon" type="/image/png" href="../images/secretHitlerIcon_small.png"/>
         <script src="//code.jquery.com/jquery.min.js"></script>
     </head>
 
     <div id="nav-placeholder"></div>
     
     <body>
-        
+        <div class="mainblock">
+            
+        </div>
 
     </body>
 
-
+    <div id="foot-placeholder"></div>
+    
     <script>
         $(function(){
-          $("#nav-placeholder").load("pageHeader.html");
+            $("#nav-placeholder").load("pageHeader.html");
+        });
+    
+        $(function(){
+            $("#foot-placeholder").load("../footer.html");
         });
     </script>
 </html>

@@ -3,37 +3,41 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <title>Secret Hitler</title>
-    <link rel="shortcut icon" type="image/png" href="images/secretHitlerIcon_small.png"/>
     <script src="//code.jquery.com/jquery.min.js"></script>
+    <link rel="shortcut icon" type="image/png" href="images/secretHitlerIcon_small.png"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
-<div id="nav-placeholder"></div>
+<body>
+    <div id="nav-placeholder"></div>
 
-<!-- First Parallax Image with Logo Text -->
-<div class="mainBlock">
-  <div>
-    <span>
-        <form action="includes/startGame.inc.php" method="post">
-            <button type="submit" name="startGame" style="background-color:rgb(222, 140, 122)">START GAME</button>
-        </form>
-    </span>
-    
-  </div>
-  <div>
-    <span><form action="includes/joinGame.inc.php" method="post">
-            <button type="submit" name="joinGame" style="background-color:rgb(222, 140, 122)">JOIN GAME</button>
-        </form>
-    </span>
-  </div>
-  
-</div>
+    <!-- First Parallax Image with Logo Text -->
+    <div class="mainblock">
+        <div>
+            <span>                
+                <button type="submit" name="startGame" style="background-color:rgb(222, 140, 122)">START GAME</button>             
+            </span>
+        </div>
+        <div>
+            <span>
+                <button type="submit" name="joinGame" style="background-color:rgb(222, 140, 122)">JOIN GAME</button>
+            </span>
+        </div>
+    </div>
+
+    <div id="foot-placeholder"></div>
+</body>
 
 
 
 
 <script>
-$(function(){
-  $("#nav-placeholder").load("header.html");
-});
+    $(function(){
+        $("#nav-placeholder").load("header.html");
+    });
+
+    $(function(){
+        $("#foot-placeholder").load("footer.html");
+    });
 </script>
 </html>
