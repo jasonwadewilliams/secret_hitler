@@ -78,7 +78,7 @@
 
     .mainblock {
         padding: 40px;
-        margin: 100px 50px;
+        margin: 100px 50px 20px 50px;
         background-color: rgb(150,150,150);
         box-shadow: 0px 0px 20px rgba(30,30,30,0.8);
     }
@@ -107,6 +107,10 @@
         padding: 50px;
     }
 
+    img {
+        max-width: 100%;
+    }
+
 
 
     /* -- vote page -- */
@@ -121,15 +125,11 @@
         text-decoration: underline;
     }
 
-    #jaimg {
-        transform: rotate(90deg);
-        width: 30%;
+    #voteimg img {
+        max-width: 100%;
     }
-
-    #neinimg {
-        transform: rotate(-90deg);
-        max-width: 30%;
-        height: auto;
+    #voteimg {
+        background-color: none;
     }
 
     #results {
@@ -137,18 +137,133 @@
         justify-content: space-around;
     }
 
-    #ja_nein {
+    #ja {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
+    #nein {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
 
     
 
     /*  -- board page -- */
-    .boards{
+    #role {
+        position: fixed;
+        bottom:30px;
+        left:30px;
+        margin: 10px;
+        padding: 10px;
+        background-color: rgb(25, 25, 25);
+        border-radius: 10px;
+        color: rgb(247,225,195);
+        z-index: 1;
+    }
+    #role img {
+        max-width: 100px;
+        border-radius: 10px;
+    }
+    .middle {
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #facistBoard {
+        float: left;
+        position:relative;
+        margin: 5px;
+    }
+    #facistBoard #facistPolicy1 {
+        top:23%;
+        left:7.5%;
+        position:absolute;
+    }
+    #liberalBoard {
+        float: left;
+        position:relative;
+        margin: 5px;
+    }
+    #liberalBoard #liberalPolicy1 {
+        top:23%;
+        left:14.5%;
+        position:absolute;
+    }
+    #liberalBoard #liberalPolicy2 {
+        top:23%;
+        left:29%;
+        position:absolute;
+    }
+    #liberalBoard #liberalPolicy3 {
+        top:23%;
+        left:43.5%;
+        position:absolute;
+    }
+
+    
+    .facistPolicy {
+        max-width: 13%;
+    }
+    .liberalPolicy {
+        max-width: 13%;
+    }
+
+    #presidency {
+        display: flex;
+        justify-content: space-around;
+        font: outline rgb(79, 191, 243);
+        color: rgb(247,225,195);
+        background-color: rgb(25,25,25);
+        font-family: 'Bungee';
+        margin-top: 75%;
+        border-radius: 10px;
+        padding: 10px;
+    }
+    #presidency p {
+        font-family: 'Girassol';
+        font-weight:bold;
+        color: rgb(25,25,25);
+    }
+    #president {
+        height:10%;
+        overflow: hidden;
+        margin: 5px;
+    }
+    #chancellor {
+        height:30%;
+        overflow: hidden;
+        margin: 5px;
+    }
+    #presidency img {
         max-width: 100%;
+        margin-top: -18%;
+        margin-bottom: -18%;
+    }
+
+
+
+
+    /* -- setup -- */
+    #game_code {
+        padding: 20px;
+    }
+    #game_code h1 {
+        color: rgb(247,225,195);
+        background-color: rgb(25,25,25);
+        font-family: 'Bungee';
+        border-radius: 10px;
+        padding: 20px;
+        font-size: 100%;
+    }
+    #setup_img {
+        box-shadow: 0px 0px 5px rgb(30,30,30);
+    }
+    #information {
 
     }
 
@@ -161,7 +276,7 @@
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 2.5rem;
+        height: 50px;
     }
 
     .center {

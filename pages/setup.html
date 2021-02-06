@@ -5,26 +5,29 @@
         <title>Secret Hitler</title>
         <link rel="shortcut icon" type="/image/png" href="../images/secretHitlerIcon_small.png"/>
         <script src="//code.jquery.com/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../style.css">
     </head>
 
     <div id="nav-placeholder"></div>
     
     <body>
-        <div class="mainblock">
-            <div class="center">
-                <img src="../images/card_back.png">
+        <div id="page_container">
+            <div class="mainblock">
+                <div id="setup_img" class="middle">
+                    <img src="../images/card_back.png">
+                </div>
+                <div class="middle" id="game_code">
+                    <p>Your Game Code</p>
+                    <h1>HZYB</h1>
+                </div>
+                <div class="middle" id="information">
+                    <p>Please enter your name</p>
+                    <input type="text" name="user_name">
+                </div>
+                <hr class="spacer">
             </div>
-            <div class="game_code">
-                <p>Your Game Code</p>
-                <h1>HZYB</h1>
-            </div>
-            <div class="information">
-                <p>Please enter your name</p>
-                <input type="text" name="user_name">
-            </div>
-            
+            <div id="foot-placeholder"></div>
         </div>
-
     </body>
 
     <div id="foot-placeholder"></div>
