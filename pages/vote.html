@@ -5,13 +5,32 @@
         <title>Secret Hitler</title>
         <link rel="shortcut icon" type="/image/png" href="../images/secretHitlerIcon_small.png"/>
         <script src="//code.jquery.com/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../style.css">
     </head>
 
     <div id="nav-placeholder"></div>
     
     <body>
         <div class="mainblock">
-            
+            <div id="button_box">
+                <button id="neinimg"><img src="../images/card_ballot_nein.png"></button>
+                <button id="jaimg"><img src="../images/card_ballot_ja.png"></button>
+            </div>
+
+            <div id="vote">
+                <h2>Waiting for 3 players to vote</h2>
+                <h2>Results</h2>
+                <div id="results">
+                    <div id="ja_nein">
+                        <p>Ja!</p>
+                        <p>4</p>
+                    </div>
+                    <div id="ja_nein">
+                        <p>Nein</p>
+                        <p>3</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </body>
