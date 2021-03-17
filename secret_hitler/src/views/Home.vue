@@ -4,6 +4,9 @@
     <div id="button_box">
       <div class="button_box">
         <div>
+          <button @click="setAbout()">ABOUT PAGE</button>        
+        </div>
+        <div>
           <button @click="setCreate()">CREATE GAME</button>        
         </div>
         <div>
@@ -35,13 +38,13 @@ export default {
     return {
       isAbout: true,
       isCreate: false,
-      isJoin: false
+      isJoin: false,
     }
   },  
   components: {
     About,
+    GameJoin,
     GameSetup,
-    GameJoin
   },
   methods: {
     setCreate() {
@@ -52,7 +55,12 @@ export default {
     setJoin() {
       this.$data.isAbout = false;
       this.$data.isCreate = false;
-      this.$date.isJoin = true;
+      this.$data.isJoin = true;
+    },
+    setAbout() {
+      this.$data.isAbout = true;
+      this.$data.isCreate = false;
+      this.$data.isJoin = false;
     }
   }
 }

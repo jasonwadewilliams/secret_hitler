@@ -4,7 +4,7 @@
             <p>Please enter your name</p>
             <input v-model="userName" type="text">
         </div>
-        <button type="button" onClick="CreateGame()" class="middle">Start New Game</button>
+        <button type="button" @click="CreateGame()" class="middle">Start New Game</button>
         <br class="spacer">
         
     </div>
@@ -16,6 +16,13 @@
         data() {
             return {
                 userName: '',
+            }
+        },
+        methods: {
+            CreateGame() {
+                let obj = {groupCode: "bxdf", users: [this.$data.userName]}
+                this.$root.$data.groups.push(obj);
+                return;
             }
         }
     

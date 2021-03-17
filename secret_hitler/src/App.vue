@@ -82,8 +82,8 @@
 }
 
 a {
-  text-decoration: none;
-  color: rgb(222,140,122);
+  text-decoration: none im !important;
+  color: rgb(222,140,122) impo !important;
 }
 
 a:hover {

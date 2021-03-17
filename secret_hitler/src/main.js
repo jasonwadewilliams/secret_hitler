@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 
 let data = {
   players: players,
-  usernames: []
+  groups: []
 }
 
 new Vue({
