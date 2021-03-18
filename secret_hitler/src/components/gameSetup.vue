@@ -20,12 +20,32 @@
         },
         methods: {
             CreateGame() {
-                let obj = {groupCode: "bxdf", users: [this.$data.userName]}
+                let newCode;
+                do {
+                    newCode = MakeCode(4);
+                } while (this.$root.$data.groups.find(function(group) {
+                        if(group.groupCode == newCode) return true
+                    }) != undefined)
+
+                let obj = {groupCode: newCode, users: [this.$data.userName], gameStarted: false}
                 this.$root.$data.groups.push(obj);
-                return;
+                localStorage.setItem('groupCode', obj.groupCode);
+                localStorage.setItem('name', this.$data.userName);
+
+                this.$router.push({name: "gameBoard", params: {gameObject: obj, userName: this.$data.userName}})
             }
         }
     
+    }
+
+    function MakeCode(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
 </script>
 

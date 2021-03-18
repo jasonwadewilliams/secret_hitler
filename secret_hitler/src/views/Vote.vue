@@ -28,9 +28,16 @@
     .mainblock {
         background-color: rgb(105, 105, 105);
         margin: 20px 0px;
+        height: 87vh;
     }
 
     /* -- vote page -- */
+    #button_box {
+        display: flex;
+        justify-content: space-evenly;
+        padding: 20px;
+    }
+
     #vote {
         display: flex;
         flex-direction: column;
@@ -47,6 +54,7 @@
     }
     #voteimg {
         background-color: none;
+        max-width: 25%;
     }
 
     #results {

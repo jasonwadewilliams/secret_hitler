@@ -1,5 +1,6 @@
 <template>
     <div id="gameJoin">
+        <p class="error" v-if="error" >{{errMsg}}</p>
         <div id="information">
             <div id="username">
                 <p>Please enter your name</p>
@@ -22,20 +23,31 @@
         data() {
             return {
                 userName: '',
-                groupCode: ''
+                groupCode: '',
+                errMsg: ''
             }
         },
         computed: {
             feildsFilled: function() {
                 return this.$data.userName != '' && this.$data.groupCode.length > 3
+            },
+            error: function() {
+                return this.$data.errMsg != '';
             }
         },
         methods: {
             join_game() {
-                this.$root.$data.groups.find(function(group) {
-                    if(group.groupCode == "bxdf") return true
-                }).users.push(this.$data.userName);
-                this.$router.push('/gameBoard')
+                let currentCode = this.$data.groupCode.toUpperCase();
+                let obj = this.$root.$data.groups.find(function(group) {
+                    if(group.groupCode == currentCode) return true
+                });
+                if (obj != undefined) {
+                    obj.users.push(this.$data.userName);
+                    localStorage.setItem('groupCode', obj.groupCode);
+                    localStorage.setItem('name', this.$data.userName);
+
+                    this.$router.push({name: "gameBoard", params: {gameObject: obj, userName: this.$data.userName}});
+                } else {this.$data.errMsg = '*The code you typed does not match any code in the database.'}
             }
         }
     
@@ -53,6 +65,10 @@
     #information {
         display: flex;
         justify-content: space-evenly;
+    }
+
+    .error {
+        color: rgb(255,0,0);
     }
 
     button {

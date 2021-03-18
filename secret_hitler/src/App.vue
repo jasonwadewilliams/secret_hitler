@@ -16,6 +16,9 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/gameBoard">Game Board</router-link>
           </li>
+          <li class="nav-item" v-if="groupCode">
+            <p id="code">{{groupCode}}</p>
+          </li>
         </ul>
       </div>
 
@@ -36,6 +39,29 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      groupCode: undefined
+    }
+  },
+  computed: {
+    code: function() {
+      //let currentCode = this.groupCode;
+      //if (this.$root.$data.groups.find(function(group) {
+      //              if(group.groupCode == currentCode) return true
+      //          }) == undefined) return undefined 
+      return this.groupCode
+    }
+  },
+  mounted() {
+    if(localStorage.groupCode) this.$data.groupCode = localStorage.groupCode;
+  }
+}
+</script>
+
+
 <style>
 @import url(https://fonts.googleapis.com/css?family=Lato);
 @import url(https://fonts.googleapis.com/css2?family=Bungee&family=Girassol&family=Noto+Sans+KR:wght@300&display=swap);
@@ -48,8 +74,11 @@
   background-position: center;
 }
 
-.body {
-  min-height: 85vh;
+#code {
+  color: rgb(55,136,149);
+  font-family: 'Bungee';
+  text-align: center;
+  margin: 8px;
 }
 
 /* Style the top navigation bar */

@@ -1,49 +1,116 @@
 <template>
     <div class="mainblock">
-        <div id="facistBoard">
-            <img class="fullWide" src="../../images/fascistBoard_8.png">
-            <img src="../../images/card_policy_fascist.png" id="facistPolicy1" class="facistPolicy">
-        </div>
-        <div id="liberalBoard">
-            <img class="fullWide" src="../../images/liberalBoard.png">
-            <img src="../../images/card_policy_liberal.png" id="liberalPolicy1" class="liberalPolicy">
-            <img src="../../images/card_policy_liberal.png" id="liberalPolicy2" class="liberalPolicy">
-            <img src="../../images/card_policy_liberal.png" id="liberalPolicy3" class="liberalPolicy">
-        </div>
-        <div id="role" class ="container">
-            <div class="panel-group">
-                <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                    <a data-toggle="collapse" href="#collapse1">Your Role</a>
-                    </h4>
-                </div>
-                <div id="collapse1" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <img src="../../images/facist_membership.png">
-                        <img src="../../images/card_role_hitler.png">
+        <div v-if="started">
+            <div id="facistBoard">
+                <img class="fullWide" src="../../images/fascistBoard_8.png">
+                <!--<img src="../../images/card_policy_fascist.png" id="facistPolicy1" class="facistPolicy">-->
+            </div>
+            <div id="liberalBoard">
+                <img class="fullWide" src="../../images/liberalBoard.png">
+                <!--<img src="../../images/card_policy_liberal.png" id="liberalPolicy1" class="liberalPolicy">
+                <img src="../../images/card_policy_liberal.png" id="liberalPolicy2" class="liberalPolicy">
+                <img src="../../images/card_policy_liberal.png" id="liberalPolicy3" class="liberalPolicy">-->
+            </div>
+            <div id="role" class ="container">
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse1">Your Role</a>
+                        </h4>
                     </div>
-                    <div class="panel-footer">Panel Footer</div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <img src="../../images/facist_membership.png">
+                            <img src="../../images/card_role_hitler.png">
+                        </div>
+                        <div class="panel-footer">Panel Footer</div>
+                    </div>
+                    </div>
                 </div>
+                
+            </div>
+            <div class="middle" id="presidency">
+                <h1>Presidency</h1>
+                <div id="president">
+                    <img src="../../images/card_placard_president.png">
+                    <p class="middle">Player 1</p>
                 </div>
+                <div id="chancellor">
+                    <img src="../../images/card_placard_chancellor.png">
+                    <p class="middle">Player 2</p>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="waiting">
+            <hr class="spacer">
+            <h1>Waiting for other players to join..</h1>
+            <h2>5 players are required to start a game.</h2>
+            <div>
+                <p>Hi {{name}}. Your game code is {{groupCode}}</p>
+            </div>
+            <div v-if="gameObject">
+                <button @click="startGame">Start!</button>
+                <WaitingRoom :players="players" />
+            </div>
+            <div v-else>
+                <button @click="extractObj">Revive</button>
+                <p>**Looks like your game code has expired, please try reviving your game or creating a new game.**</p>
             </div>
             
         </div>
-        <div class="middle" id="presidency">
-            <h1>Presidency</h1>
-            <div id="president">
-                <img src="../../images/card_placard_president.png">
-                <p class="middle">Player 1</p>
-            </div>
-            <div id="chancellor">
-                <img src="../../images/card_placard_chancellor.png">
-                <p class="middle">Player 2</p>
-            </div>
-        </div>
         <hr class="spacer">
-
     </div>
 </template>
+
+<script>
+import WaitingRoom from '../components/waitingRoom.vue'
+//import underscore from 'underscore';
+export default {
+    name: 'Board', 
+    components: {
+        WaitingRoom
+    },
+    data() {
+        return {
+            gameObject: this.$route.params.gameObject,
+            groupCode: '', //this.$route.params.gameObject.groupCode,
+            name: '',
+            started: false
+        }
+    },
+    computed: {
+        waiting: function() {
+            return !this.started;
+        },
+        players() {
+            return this.$root.$data.players.filter(player => player.id <= this.$data.gameObject.users.length);
+        }
+    },
+    methods: {
+        extractObj() {
+            let currentCode = this.$data.groupCode;
+            let Obj = this.$root.$data.groups.find(function(group) {
+                    if(group.groupCode == currentCode) return true
+                });
+            this.$data.gameObject = Obj;
+        },
+        startGame() {
+
+            this.started = true;
+        }
+    },
+    created() {
+        this.$data.groupCode = localStorage.getItem("groupCode");
+        this.$data.name = localStorage.getItem("name");
+        let code = this.$data.groupCode;
+        this.$data.gameObject = this.$root.$data.groups.find(function(group) {
+                    if(group.groupCode == code) return true
+                });
+    }
+}
+</script>
 
 
 
@@ -51,6 +118,7 @@
     .mainblock {
         background-color: rgb(105, 105, 105);
         margin: 20px 0px;
+        height: 85vh;
     }
 
     /*  -- board page -- */
