@@ -11,6 +11,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
         name: 'GameSetup',
         data() {
@@ -19,7 +20,7 @@
             }
         },
         methods: {
-            CreateGame() {
+            async CreateGame() {
                 let newCode;
                 do {
                     newCode = MakeCode(4);
@@ -29,10 +30,24 @@
 
                 let obj = {groupCode: newCode, users: [this.$data.userName], gameStarted: false}
                 this.$root.$data.groups.push(obj);
+                try {
+                console.log("here");
+                let res = await axios.post('/api/players', {
+                    groupCode: obj.groupCode,
+                    name: this.$data.userName,
+                    role: "facist",
+                    isAlive: true
+                })
+                console.log(res);
+                } catch (error) {
+                    console.log(error);
+                }
+
                 localStorage.setItem('groupCode', obj.groupCode);
                 localStorage.setItem('name', this.$data.userName);
 
                 this.$router.push({name: "gameBoard", params: {gameObject: obj, userName: this.$data.userName}})
+           
             }
         }
     

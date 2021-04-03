@@ -66,6 +66,7 @@
 
 <script>
 import WaitingRoom from '../components/waitingRoom.vue'
+import axios from 'axios';
 //import underscore from 'underscore';
 export default {
     name: 'Board', 
@@ -85,7 +86,9 @@ export default {
             return !this.started;
         },
         players() {
-            return this.$root.$data.players.filter(player => player.id <= this.$data.gameObject.users.length);
+            let players = this.getPlayers();
+            return players;
+            //return this.$root.$data.players.filter(player => player.id <= this.$data.gameObject.users.length);
         }
     },
     methods: {
@@ -99,6 +102,14 @@ export default {
         startGame() {
 
             this.started = true;
+        },
+        async getPlayers() {
+            try {
+                let response = await axios.get("/api/players");
+                return response;
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
     created() {

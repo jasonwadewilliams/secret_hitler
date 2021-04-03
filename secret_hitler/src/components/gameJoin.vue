@@ -29,10 +29,10 @@
         },
         computed: {
             feildsFilled: function() {
-                return this.$data.userName != '' && this.$data.groupCode.length > 3
+                return this.userName != '' && this.groupCode.length > 3
             },
             error: function() {
-                return this.$data.errMsg != '';
+                return this.errMsg != '';
             }
         },
         methods: {
