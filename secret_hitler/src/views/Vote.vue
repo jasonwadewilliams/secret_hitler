@@ -22,6 +22,20 @@
     </div>
 </template>
 
+<script>
+//import axios from 'axios';
+
+export default {
+    name: "Vote",
+    data() {
+        return {
+            voteSelected: null,
+        }
+    },
+}
+</script>
+
+
 
 
 <style scoped>

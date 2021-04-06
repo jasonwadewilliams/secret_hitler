@@ -32,6 +32,7 @@
                 try {
                     let game = await axios.post('/api/games', {
                         groupCode: groupCode,
+                        status: "waiting",
                     })
                     let player = await axios.post("/api/games/" + game.data._id + "/players", {
                         name: this.userName,

@@ -67,20 +67,4 @@ img {
 	margin: 0px;
 	font-size: 20px;
 }
-
-
-.price {
-	display: flex;
-}
-
-button {
-	height: 50px;
-	background: #000;
-	color: white;
-	border: none;
-}
-
-.auto {
-	margin-left: auto;
-}
 </style>

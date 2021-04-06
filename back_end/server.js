@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/players', {
 
 const gameSchema = new mongoose.Schema({
 	groupCode: String,
+	status: String,
 })
 const Game = mongoose.model('Game', gameSchema);
 
@@ -44,6 +45,7 @@ app.post('/api/games', async (req, res) => {
 	try {
 		const game = new Game({
 			groupCode: req.body.groupCode,
+			status: req.body.status,
 		});
 		await game.save();
 		res.send(game);
@@ -192,6 +194,21 @@ app.put('/api/games/:gameID/players/:playerID', async (req, res) => {
 		player.role = req.body.role;
         await player.save();
         res.send(player);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+app.put('/api/games/:gameID', async (req, res) => {
+    try {
+        let game = await Game.findOne({_id:req.params.gameID});
+        if (!game) {
+			res.sendStatus(404);
+			return;
+	}
+        game.status = req.body.status;
+        await game.save();
+        res.send(game);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

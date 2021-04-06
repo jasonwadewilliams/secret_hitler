@@ -1,6 +1,33 @@
 <template>
     <div class="mainblock">
-        <div v-if="started">
+        <div v-if="status == 'waiting'">
+            <hr class="spacer">
+            <div v-if="players_needed" id="waiting_for_players">
+                <h1>Waiting for other players to join..</h1>
+                <div class="blue">
+                    <span>{{players_needed}} more player</span><span v-if="players_needed == 1"> is</span><span v-else>s are</span><span> required to start a game.</span>
+                </div>
+            </div>
+            <div v-else>
+                <button @click="startGame">Start!</button>
+            </div>
+            <div>
+                <p v-if="player">Hi {{player.name}}. Your game code is {{gameCode}}</p>
+            </div>
+
+            <h2>List of Players</h2>
+            <ul>
+                <li v-for="player in filteredPlayers" :key="player.id">
+                    <p>{{player.name}}</p>
+                </li>
+            </ul>
+            <hr class="spacer">
+            <h2>Roles in use.</h2> 
+            <WaitingRoom :roles="roles"></WaitingRoom>                       
+        </div>
+
+
+        <div v-if="status = 'started'">
             <div id="facistBoard">
                 <img class="fullWide" src="../../images/fascistBoard_8.png">
                 <!--<img src="../../images/card_policy_fascist.png" id="facistPolicy1" class="facistPolicy">-->
@@ -14,47 +41,29 @@
             <div id="role" class ="container">
                 <div class="panel-group">
                     <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#collapse1">Your Role</a>
-                        </h4>
-                    </div>
-                    <div id="collapse1" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <img src="../../images/facist_membership.png">
-                            <img src="../../images/card_role_hitler.png">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1">Role</a>
+                            </h4>
                         </div>
-                        <div class="panel-footer">Panel Footer</div>
+                        <div id="collapse1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <img src="../../images/facist_membership.png">
+                                <img src="../../images/card_role_hitler.png">
+                            </div>
+                            <span v-if="player">
+                                <p>{{player.name}}</p>
+                                <div>
+                                    <input class="panel-footer" v-model="editName">
+                                    <button @click="updateName()" >edit</button>
+                                </div>
+                            </span>
+                            <span v-else class="blue">*an error occured</span>
+                        </div>
                     </div>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="middle" id="presidency">
-                <h1>Presidency</h1>
-                <div id="president">
-                    <img src="../../images/card_placard_president.png">
-                    <p class="middle">Player 1</p>
-                </div>
-                <div id="chancellor">
-                    <img src="../../images/card_placard_chancellor.png">
-                    <p class="middle">Player 2</p>
                 </div>
             </div>
-        </div>
-
-        <div v-if="waiting">
-            <hr class="spacer">
-            <h1>Waiting for other players to join..</h1>
-            <h2>5 more players are required to start a game.</h2>
-            <div>
-                <p v-if="player">Hi {{player.name}}. Your game code is {{gameCode}}</p>
-            </div>
-            <div>
-                <button @click="startGame">Start!</button>
-                <WaitingRoom :roles="roles" />
-            </div>            
-        </div>
+        </div>        
         <hr class="spacer">
     </div>
 </template>
@@ -71,36 +80,53 @@
         data() {
             return {
                 gameCode: '',
+                id: '',
                 game: null,
                 player: null,
-                started: false,
+                editName: '',
                 players: [],
+                players_needed: null,
+                status: ''
             }
         },
         created() {
             this.getData();
+            this.autoRefresh(5000);
         },
         computed: {
-            waiting: function() {
-                return !this.started;
-            },
             roles() {
                 return this.$root.$data.roles.filter(role => role.id <= this.players.length);
-            }
+            },
+            filteredPlayers() {
+                return this.players;
+            },
         },
         methods: {
-            startGame() {
-                this.started = true;
+            async startGame() {
+                try {
+                    this.game = await axios.put(`/api/games/${this.game._id}`, {
+                        status: "started",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             },
             async getData() {
                 this.gameCode = localStorage.getItem("secret_hitler_gameCode");
+                this.id = localStorage.getItem("secret_hitler_id");
                 this.game = await this.getGame();
+                this.status = this.game.status;
                 this.players = await this.getPlayers();
+                this.player = await this.getPlayer();
+                if (this.players.length < 5) {
+                    this.players_needed = 5 - this.players.length;
+                } else {
+                    this.players_needed = null;
+                }
             },
             async getGame() {
                 try {
                     const response = await axios.get("/api/gamecode/" + this.gameCode);
-                    //console.log(response);
                     return response.data;
                 } catch (error) {
                     console.log(error);
@@ -114,6 +140,30 @@
                     console.log(error);
                 }
             },
+            async getPlayer() {
+                try {
+                    const response = await axios.get(`/api/games/${this.game._id}/players/${this.id}`);
+                    return response.data;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async updateName() {
+                try {
+                    await axios.put(`/api/games/${this.game._id}/players/${this.id}`, {
+                        name: this.editName,
+                        isAlive: this.player.isAlive,
+                        role: this.player.role,
+                    });
+                    this.getPlayer();
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async autoRefresh(time) {
+                setInterval(this.getData, time);
+            }
+            
         }
     }
 </script>
@@ -124,17 +174,68 @@
     .mainblock {
         background-color: rgb(105, 105, 105);
         margin: 20px 0px;
-        height: 85vh;
+        min-height: 85vh;
     }
+
+    ul {
+	list-style: none;
+	margin: 10px;
+    }
+
+    li {
+        background-color: rgb(25,25,25);
+        color: rgb(247,225,195);
+        width: 20%;
+        min-width: 150px;
+        padding: 10px;
+        font-size: 1em;
+        display: inline-table;
+    }
+
+
+    h2 {
+        background-color: rgb(25,25,25);
+        color: rgb(247,225,195);
+        padding: 4px;
+        text-size-adjust: auto;
+        font-family: 'Bungee';
+        text-decoration: underline;
+    }
+
+    .blue {
+        color: rgb(79, 191, 243);
+    }
+
+    button {
+		font-family: 'Girassol';
+		font-weight:bold;
+		font-size:larger;
+		padding: 10px;
+        margin: 10px;
+		border-radius: 20px;
+		border-style: outset;
+		border-width: 3px;
+		color:rgb(0, 0, 0);
+		background-color:rgb(222, 140, 122);
+		box-shadow: 0px 0px 5px rgb(30,30,30);
+	}
+
+	button:hover {
+		transform:translate(-3px,-3px);
+		background-color:rgb(242, 160, 142);
+		box-shadow: 0px 0px 12px rgb(20,20,20);
+	}
 
     /*  -- board page -- */
     #role {
         position: fixed;
-        bottom: 5px;
+        bottom: 25px;
         left: 5px;
         margin: 10px;
         padding: 10px;
-        max-width: 50%;
+        width:25%;
+        max-width: 300px;
+        min-width: 100px;
         background-color: rgb(25, 25, 25);
         border-radius: 10px;
         color: rgb(247,225,195);
@@ -144,6 +245,12 @@
         max-width: 100px;
         border-radius: 10px;
     }
+
+    #role input{
+        width: 70%;
+        max-width: 200px;
+    }
+
     .middle {
         display:flex;
         flex-direction: column;
@@ -191,37 +298,5 @@
     }
     .liberalPolicy {
         max-width: 13%;
-    }
-
-    #presidency {
-        display: flex;
-        justify-content: space-around;
-        font: outline rgb(79, 191, 243);
-        color: rgb(247,225,195);
-        background-color: rgb(25,25,25);
-        font-family: 'Bungee';
-        margin-top: 75%;
-        border-radius: 10px;
-        padding: 10px;
-    }
-    #presidency p {
-        font-family: 'Girassol';
-        font-weight:bold;
-        color: rgb(25,25,25);
-    }
-    #president {
-        height:10%;
-        overflow: hidden;
-        margin: 5px;
-    }
-    #chancellor {
-        height:30%;
-        overflow: hidden;
-        margin: 5px;
-    }
-    #presidency img {
-        max-width: 100%;
-        margin-top: -18%;
-        margin-bottom: -18%;
     }
 </style>
