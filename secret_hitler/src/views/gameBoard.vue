@@ -46,74 +46,76 @@
         <div v-if="waiting">
             <hr class="spacer">
             <h1>Waiting for other players to join..</h1>
-            <h2>5 players are required to start a game.</h2>
+            <h2>5 more players are required to start a game.</h2>
             <div>
-                <p>Hi {{name}}. Your game code is {{groupCode}}</p>
+                <p v-if="player">Hi {{player.name}}. Your game code is {{gameCode}}</p>
             </div>
-            <div v-if="gameObject">
+            <div>
                 <button @click="startGame">Start!</button>
-                <Waiting-room :roles="roles">
-            </div>
-            <div v-else>
-                <button @click="extractObj">Revive</button>
-                <p>**Looks like your game code has expired, please try reviving your game or creating a new game.**</p>
-            </div>
-            
+                <WaitingRoom :roles="roles" />
+            </div>            
         </div>
         <hr class="spacer">
     </div>
 </template>
 
 <script>
-import WaitingRoom from '../components/waitingRoom.vue'
-import axios from 'axios';
-//import underscore from 'underscore';
-export default {
-    name: 'Board', 
-    components: {
-        WaitingRoom
-    },
-    data() {
-        return {
-            groupCode: '',
-            name: '',
-            role: '',
-            isAlive: null,
-            started: false,
-            players: [],
-        }
-    },
-    created() {
-        this.getData();
-    },
-    computed: {
-        waiting: function() {
-            return !this.started;
+    import axios from 'axios';
+    import WaitingRoom from '../components/waitingRoom.vue'
+    //import underscore from 'underscore';
+    export default {
+        name: 'GameBoard', 
+        components: {
+            WaitingRoom
         },
-        roles() {
-            return this.$root.$data.products.filter(product => product.name.toLowerCase().search(this.searchText.toLowerCase()) >= 0);
-        }
-    },
-    methods: {
-        startGame() {
-            this.started = true;
-        },
-        async getData() {
-            try {
-                let ID = localStorage.getItem("secret_hitler_id");
-                let GAMEID = localStorage.getItem("secret_hitler_game_id")
-                let player = await axios.get("/api/games/" + GAMEID + "/players/" + ID).data;
-                this.name = player.name;
-                this.role = player.role;
-                this.isAlive = player.isAlive;
-
-                this.players = await axios.get("/api/games/" + GAMEID + "/players").data;
-            } catch (error) {
-                console.log(error);
+        data() {
+            return {
+                gameCode: '',
+                game: null,
+                player: null,
+                started: false,
+                players: [],
             }
+        },
+        created() {
+            this.getData();
+        },
+        computed: {
+            waiting: function() {
+                return !this.started;
+            },
+            roles() {
+                return this.$root.$data.roles.filter(role => role.id <= this.players.length);
+            }
+        },
+        methods: {
+            startGame() {
+                this.started = true;
+            },
+            async getData() {
+                this.gameCode = localStorage.getItem("secret_hitler_gameCode");
+                this.game = await this.getGame();
+                this.players = await this.getPlayers();
+            },
+            async getGame() {
+                try {
+                    const response = await axios.get("/api/gamecode/" + this.gameCode);
+                    //console.log(response);
+                    return response.data;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async getPlayers() {
+                try {
+                    const response = await axios.get(`/api/games/${this.game._id}/players`);
+                    return response.data;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
         }
     }
-}
 </script>
 
 

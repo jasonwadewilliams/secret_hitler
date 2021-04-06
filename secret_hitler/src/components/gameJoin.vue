@@ -8,7 +8,7 @@
             </div>
             <div id="groupCode">
                 <p>Please enter your group code</p>
-                <input v-model="groupCode" type="text" placeholder="4-letter code">
+                <input id="code_input" v-model="groupCode" type="text" placeholder="4-letter code">
             </div>
         </div>
         <button v-if="feildsFilled" @click="join_game">Join Game</button>
@@ -18,13 +18,15 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
         name: 'GameJoin',
         data() {
             return {
                 userName: '',
                 groupCode: '',
-                errMsg: ''
+                errMsg: '',
+                id: '',
             }
         },
         computed: {
@@ -36,18 +38,33 @@
             }
         },
         methods: {
-            join_game() {
-                let currentCode = this.$data.groupCode.toUpperCase();
-                let obj = this.$root.$data.groups.find(function(group) {
-                    if(group.groupCode == currentCode) return true
-                });
-                if (obj != undefined) {
-                    obj.users.push(this.$data.userName);
-                    localStorage.setItem('groupCode', obj.groupCode);
-                    localStorage.setItem('name', this.$data.userName);
+            async join_game() {
+                this.groupCode = this.groupCode.toUpperCase();
+                let notFound = false;
+                try {
+                    let game = await axios.get("/api/gamecode/" + this.groupCode);
+                    let player = await axios.post("/api/games/" + game.data._id + "/players", {
+                        name: this.userName,
+                        role: null, 
+                        isAlive: true
+                    });
+                    this.id = player.data._id;
+                } catch (error) {
+                    if (error.response.status === 404) {
+                        notFound = true;
+                    } else {
+                        console.log(error);
+                    }
+                }
 
-                    this.$router.push({name: "gameBoard", params: {gameObject: obj, userName: this.$data.userName}});
-                } else {this.$data.errMsg = '*The code you typed does not match any code in the database.'}
+
+                if (notFound) {
+                    this.errMsg = '*The code you typed does not match any code in the database.';
+                } else {
+                    localStorage.setItem('secret_hitler_id', this.id);
+                    localStorage.setItem('secret_hitler_gameCode', this.groupCode);
+                    this.$router.push({name: "gameBoard"});
+                }
             }
         }
     
@@ -60,6 +77,10 @@
         padding: 20px;
         background-color: rgb(247,225,195);
         box-shadow: 0px 0px 20px rgb(20,20,20);
+    }
+
+    #code_input {
+        text-transform: uppercase;
     }
 
     #information {

@@ -30,21 +30,21 @@
                     }) != undefined)*/
 
                 try {
-                    let res = await axios.post('/api/games', {
+                    let game = await axios.post('/api/games', {
                         groupCode: groupCode,
                     })
-                    let play = await axios.post("/api/games/" + res.data._id + "/players", {
+                    let player = await axios.post("/api/games/" + game.data._id + "/players", {
                         name: this.userName,
                         role: null, 
                         isAlive: true
                     })
-                    this.id = play.data._id;
+                    this.id = player.data._id;
                 } catch (error) {
                     console.log(error);
                 }
 
                 localStorage.setItem('secret_hitler_id', this.id);
-                localStorage.setItem('secret_hitler_game_id', groupCode);
+                localStorage.setItem('secret_hitler_gameCode', groupCode);
                 this.$router.push({name: "gameBoard"})
             },
         }
