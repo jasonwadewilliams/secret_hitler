@@ -17,7 +17,8 @@ const routes = [
     component: gameBoard,
     props: true
   },
-  { path: '/Vote', name: 'Vote', component: () => import('../views/Vote.vue')}
+  { path: '/Vote', name: 'Vote', component: () => import('../views/Vote.vue')},
+  { path: '/Admin', name: 'Admin', component: () => import('../views/Admin.vue')}
 ]
 
 const router = new VueRouter({

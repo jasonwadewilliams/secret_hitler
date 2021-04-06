@@ -47,10 +47,10 @@ const Player = mongoose.model('Player', playerSchema);
 
 // Create a new game.
 app.post('/api/games', async (req, res) => {
-  const game = new Game({
-    groupCode: req.body.groupCode,
-  });
   try {
+    const game = new Game({
+      groupCode: req.body.groupCode,
+    });
     await game.save();
     res.send(game);
   } catch (error) {
@@ -105,6 +105,20 @@ app.get('/api/games/:gameID/players', async (req, res) => {
       console.log(error);
       res.sendStatus(500);
   }
+});
+// Get a single player in a given game.
+app.get('/api/games/:gameID/players/:playerID', async (req, res) => {
+  try {
+    let player = await Item.findOne({_id:req.params.playerID, game: req.params.gameID});
+    if (!player) {
+        res.send(404);
+        return;
+    }
+    res.send(player);
+} catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+}
 });
 
 

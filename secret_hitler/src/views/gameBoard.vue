@@ -75,50 +75,40 @@ export default {
     },
     data() {
         return {
-            gameObject: this.$route.params.gameObject,
-            groupCode: '', //this.$route.params.gameObject.groupCode,
+            groupCode: '',
             name: '',
-            started: false
+            role: '',
+            isAlive: null,
+            started: false,
+            players: [],
         }
+    },
+    created() {
+        this.getData();
     },
     computed: {
         waiting: function() {
             return !this.started;
         },
-        players() {
-            let players = this.getPlayers();
-            return players;
-            //return this.$root.$data.players.filter(player => player.id <= this.$data.gameObject.users.length);
-        }
     },
     methods: {
-        extractObj() {
-            let currentCode = this.$data.groupCode;
-            let Obj = this.$root.$data.groups.find(function(group) {
-                    if(group.groupCode == currentCode) return true
-                });
-            this.$data.gameObject = Obj;
-        },
         startGame() {
-
             this.started = true;
         },
-        async getPlayers() {
+        async getData() {
             try {
-                let response = await axios.get("/api/players");
-                return response;
+                let ID = localStorage.getItem("secret_hitler_id");
+                let GAMEID = localStorage.getItem("secret_hitler_game_id")
+                let player = await axios.get("/api/games/" + GAMEID + "/players/" + ID).data;
+                this.name = player.name;
+                this.role = player.role;
+                this.isAlive = player.isAlive;
+
+                this.players = await axios.get("/api/games/" + GAMEID + "/players").data;
             } catch (error) {
                 console.log(error);
             }
         }
-    },
-    created() {
-        this.$data.groupCode = localStorage.getItem("groupCode");
-        this.$data.name = localStorage.getItem("name");
-        let code = this.$data.groupCode;
-        this.$data.gameObject = this.$root.$data.groups.find(function(group) {
-                    if(group.groupCode == code) return true
-                });
     }
 }
 </script>

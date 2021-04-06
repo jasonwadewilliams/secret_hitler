@@ -17,38 +17,36 @@
         data() {
             return {
                 userName: '',
+                id: '',
             }
         },
         methods: {
             async CreateGame() {
-                let newCode;
-                do {
+                let groupCode = MakeCode(4);
+                /*do {
                     newCode = MakeCode(4);
                 } while (this.$root.$data.groups.find(function(group) {
                         if(group.groupCode == newCode) return true
-                    }) != undefined)
+                    }) != undefined)*/
 
-                let obj = {groupCode: newCode, users: [this.$data.userName], gameStarted: false}
-                this.$root.$data.groups.push(obj);
                 try {
-                console.log("here");
-                let res = await axios.post('/api/players', {
-                    groupCode: obj.groupCode,
-                    name: this.$data.userName,
-                    role: "facist",
-                    isAlive: true
-                })
-                console.log(res);
+                    let res = await axios.post('/api/games', {
+                        groupCode: groupCode,
+                    })
+                    let play = await axios.post("/api/games/" + res.data._id + "/players", {
+                        name: this.userName,
+                        role: null, 
+                        isAlive: true
+                    })
+                    this.id = play.data._id;
                 } catch (error) {
                     console.log(error);
                 }
 
-                localStorage.setItem('groupCode', obj.groupCode);
-                localStorage.setItem('name', this.$data.userName);
-
-                this.$router.push({name: "gameBoard", params: {gameObject: obj, userName: this.$data.userName}})
-           
-            }
+                localStorage.setItem('secret_hitler_id', this.id);
+                localStorage.setItem('secret_hitler_game_id', groupCode);
+                this.$router.push({name: "gameBoard"})
+            },
         }
     
     }

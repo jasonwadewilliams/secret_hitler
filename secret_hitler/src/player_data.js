@@ -1,4 +1,4 @@
-let players = [{
+let roles = [{
     id: 1,
     name: "Hitler!",
     party: "Facist",
@@ -143,4 +143,4 @@ let players = [{
   },
 ]
 
-export default players;
+export default roles;
