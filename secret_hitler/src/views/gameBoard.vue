@@ -52,7 +52,7 @@
             </div>
             <div v-if="gameObject">
                 <button @click="startGame">Start!</button>
-                <WaitingRoom :players="players" />
+                <Waiting-room :roles="roles">
             </div>
             <div v-else>
                 <button @click="extractObj">Revive</button>
@@ -90,6 +90,9 @@ export default {
         waiting: function() {
             return !this.started;
         },
+        roles() {
+            return this.$root.$data.products.filter(product => product.name.toLowerCase().search(this.searchText.toLowerCase()) >= 0);
+        }
     },
     methods: {
         startGame() {
