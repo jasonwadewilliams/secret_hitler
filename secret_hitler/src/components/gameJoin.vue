@@ -42,7 +42,7 @@
                 this.groupCode = this.groupCode.toUpperCase();
                 let notFound = false;
                 try {
-                    let game = await axios.get("/api/gamecode/" + this.groupCode);
+                    let game = await axios.get("/api/games/gamecode/" + this.groupCode);
                     let player = await axios.post("/api/games/" + game.data._id + "/players", {
                         name: this.userName,
                         role: null, 

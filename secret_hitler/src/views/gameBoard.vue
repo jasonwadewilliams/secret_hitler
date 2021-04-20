@@ -22,12 +22,12 @@
                 </li>
             </ul>
             <hr class="spacer">
-            <h2>Roles in use.</h2> 
+            <h2>Roles in use</h2> 
             <WaitingRoom :roles="roles"></WaitingRoom>                       
         </div>
 
 
-        <div v-if="status = 'started'">
+        <div v-if="status == 'started'">
             <div id="facistBoard">
                 <img class="fullWide" src="../../images/fascistBoard_8.png">
                 <!--<img src="../../images/card_policy_fascist.png" id="facistPolicy1" class="facistPolicy">-->
@@ -46,20 +46,21 @@
                             <a data-toggle="collapse" href="#collapse1">Role</a>
                             </h4>
                         </div>
-                        <div id="collapse1" class="panel-collapse collapse">
+                        <div v-if="player.role" id="collapse1" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <img src="../../images/facist_membership.png">
-                                <img src="../../images/card_role_hitler.png">
+                                <p>{{myRole}}</p>
+                                <img :src="require(`../../images/${myPartyCard}`)">
+                                <img :src="require(`../../images/${myRoleCard}`)">
                             </div>
-                            <span v-if="player">
+                            <span>
                                 <p>{{player.name}}</p>
                                 <div>
                                     <input class="panel-footer" v-model="editName">
                                     <button @click="updateName()" >edit</button>
                                 </div>
                             </span>
-                            <span v-else class="blue">*an error occured</span>
                         </div>
+                        <span v-else class="blue">*an error occured</span>
                     </div>
                 </div>
             </div>
@@ -71,9 +72,9 @@
 <script>
     import axios from 'axios';
     import WaitingRoom from '../components/waitingRoom.vue'
-    //import underscore from 'underscore';
+    import underscore from 'underscore';
     export default {
-        name: 'GameBoard', 
+        name: 'GameBoard',
         components: {
             WaitingRoom
         },
@@ -83,6 +84,7 @@
                 id: '',
                 game: null,
                 player: null,
+                role: null,
                 editName: '',
                 players: [],
                 players_needed: null,
@@ -91,7 +93,9 @@
         },
         created() {
             this.getData();
-            this.autoRefresh(5000);
+            if (this.player == null) {
+                this.autoRefresh(5000);
+            }
         },
         computed: {
             roles() {
@@ -100,6 +104,24 @@
             filteredPlayers() {
                 return this.players;
             },
+            myRole() {
+                if (this.player.role) {
+                    return this.$root.$data.roles.find(role => role.id == this.player.role).party;
+                }
+                return null
+            },
+            myRoleCard() {
+                if (this.player.role) {
+                    return this.$root.$data.roles.find(role => role.id == this.player.role).role_image;
+                }
+                return null
+            },
+            myPartyCard() {
+                if (this.player.role) {
+                    return this.$root.$data.roles.find(role => role.id == this.player.role).party_image;
+                }
+                return null
+            }
         },
         methods: {
             async startGame() {
@@ -107,6 +129,8 @@
                     this.game = await axios.put(`/api/games/${this.game._id}`, {
                         status: "started",
                     });
+                    await this.shuffleRoles();
+
                 } catch (error) {
                     console.log(error);
                 }
@@ -118,15 +142,15 @@
                 this.status = this.game.status;
                 this.players = await this.getPlayers();
                 this.player = await this.getPlayer();
-                if (this.players.length < 5) {
-                    this.players_needed = 5 - this.players.length;
+                if (this.players.length < 2) {
+                    this.players_needed = 2 - this.players.length;
                 } else {
                     this.players_needed = null;
                 }
             },
             async getGame() {
                 try {
-                    const response = await axios.get("/api/gamecode/" + this.gameCode);
+                    const response = await axios.get("/api/games/gamecode/" + this.gameCode);
                     return response.data;
                 } catch (error) {
                     console.log(error);
@@ -159,6 +183,24 @@
                 } catch (error) {
                     console.log(error);
                 }
+            },
+            async updatePlayerRole(playerID, roleID, gameID) {
+                try {
+                    await axios.put('/api/games/roleChange/' + gameID + '/players/' + playerID, {
+                        role: roleID
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async shuffleRoles() {
+                let RoleList = this.$root.$data.roles.filter(role => role.id <= this.players.length);
+                let shuffledDeck = underscore.shuffle(RoleList)
+                let roleCount = 0;
+                this.players.forEach(player => {
+                    this.updatePlayerRole(player._id, shuffledDeck[roleCount].id, player.game)
+                    roleCount += 1;
+                });
             },
             async autoRefresh(time) {
                 setInterval(this.getData, time);

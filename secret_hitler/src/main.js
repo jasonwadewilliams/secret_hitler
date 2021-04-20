@@ -8,7 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 Vue.config.productionTip = false
 
 let data = {
-  roles: roles
+  roles: roles,
+  user: null
 }
 
 new Vue({

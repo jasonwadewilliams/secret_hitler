@@ -18,7 +18,8 @@ const routes = [
     props: true
   },
   { path: '/Vote', name: 'Vote', component: () => import('../views/Vote.vue')},
-  { path: '/Admin', name: 'Admin', component: () => import('../views/Admin.vue')}
+  { path: '/Admin', name: 'Admin', component: () => import('../views/Admin.vue')},
+  { path: '/createAccount', name: 'createAccount', component: () => import('../views/createAccount.vue')}
 ]
 
 const router = new VueRouter({

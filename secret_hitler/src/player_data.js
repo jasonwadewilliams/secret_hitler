@@ -14,7 +14,7 @@ let roles = [{
   },
   {
     id: 3,
-    name: "Sam",
+    name: "Samantha",
     party: "Liberal",
     party_image: 'card_party_liberal.png',
     role_image: 'card_role_liberal_2.png'

@@ -1,53 +1,64 @@
 <template>
-    <div id="gameSetup">
+<div>
+    <div v-if="user" id="gameSetup">
         <div class="middle" id="information">
-            <p>Please enter your name</p>
-            <input v-model="userName" type="text">
+            <p>Thanks for playing {{this.$root.$data.user.username}}</p>
         </div>
         <button type="button" @click="CreateGame()" class="middle">Start New Game</button>
         <br class="spacer">
         
     </div>
+</div>
 </template>
 
 <script>
     import axios from 'axios';
     export default {
         name: 'GameSetup',
-        data() {
-            return {
-                userName: '',
-                id: '',
+        async created() {
+            try {
+                let response = await axios.get('/api/users');
+                this.$root.$data.user = response.data.user;
+            } catch (error) {
+                this.$root.$data.user = null;
             }
         },
         methods: {
             async CreateGame() {
-                let groupCode = MakeCode(4);
-                /*do {
-                    newCode = MakeCode(4);
-                } while (this.$root.$data.groups.find(function(group) {
-                        if(group.groupCode == newCode) return true
-                    }) != undefined)*/
-
                 try {
+                    let groupCode = MakeCode(4);
+                    /*let allGames = await axios.get('/api/games').data
+                    while (allGames.find(function(game) {
+                        if(game.groupCode == groupCode) return true
+                    }) != undefined) {groupCode = MakeCode(4)}*/
+
+
                     let game = await axios.post('/api/games', {
                         groupCode: groupCode,
                         status: "waiting",
                     })
                     let player = await axios.post("/api/games/" + game.data._id + "/players", {
-                        name: this.userName,
+                        name: this.$root.$data.user.username,
                         role: null, 
                         isAlive: true
                     })
-                    this.id = player.data._id;
+                    localStorage.setItem('secret_hitler_id', player.data._id);
+                    localStorage.setItem('secret_hitler_gameCode', groupCode);
+                    this.$router.push({name: "gameBoard"})
                 } catch (error) {
                     console.log(error);
                 }
-
-                localStorage.setItem('secret_hitler_id', this.id);
-                localStorage.setItem('secret_hitler_gameCode', groupCode);
-                this.$router.push({name: "gameBoard"})
             },
+            routeToRegister() {
+                this.$router.push({name: "createAccount"})
+                return false;
+            }
+        },
+        computed: {
+            user() {
+                if (this.$root.$data.user) return true;
+                else  return this.routeToRegister();           
+            }
         }
     
     }

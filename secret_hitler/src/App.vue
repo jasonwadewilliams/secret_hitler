@@ -19,8 +19,11 @@
 					<li class="nav-item">
 						<router-link class="nav-link" to="/gameBoard">Game Board</router-link>
 					</li>
-					<li class="nav-item" v-if="groupCode">
-						<p id="code">{{groupCode}}</p>
+					<li class="nav-item" v-if="user">
+						<p id="code">{{username}}</p>
+					</li>
+					<li class="nav-item" v-else>
+						<router-link class="nav-link" to="/createAccount">LOGIN</router-link>
 					</li>
 				</ul>
 			</div>
@@ -32,8 +35,9 @@
 		<br class="spacer">
 		<div class="center">
 			<div>
-				<p>website created by Jason Williams based on the free game, 
+				<p>website created by Jason Williams based on the game, 
 					<a href="https://www.secrethitler.com/" target="blank">Secret Hitler</a></p>
+				<p>Final Project hours spent: 20hrs</p>
 			</div>
 			<div>
 				<a href="https://github.com/jasonwadewilliams/secret_hitler" target="blank">Github Repository</a>
@@ -51,6 +55,14 @@ export default {
 	},
 	created() {
 		this.groupCode = localStorage.getItem("secret_hitler_gameCode");
+	},
+	computed: {
+		user() {
+			return this.$root.$data.user;
+		},
+		username() {
+			return this.$root.$data.user.username;
+		}
 	}
 }
 </script>
